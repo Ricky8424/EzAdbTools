@@ -3,6 +3,8 @@ Tipz Team takes the security of our software products and services seriously, wh
 
 ## Supported Versions
 
+We unsupport versions regularly to avoid older versions with possibly older plugins face security issues 
+
 Below is a chart of supported and unsupported versions.
 
 | Version | Supported          | Support till |
