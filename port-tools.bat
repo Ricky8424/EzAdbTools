@@ -49,8 +49,13 @@ pause
 call unpack_img.bat boot.img input/
 
 :createdir
+IF EXIST input (
+echo old folder exists, deleting...
+del input
+) ELSE (
 mkdir input
 goto boot
+)
 
 :exit
 call start.bat
