@@ -8,7 +8,7 @@
 - API Level 21 or higher for scrcpy
 
 ## 📦Download
-[Releases](https://github.com/TipzTeam/EzAdbTools/releases)
+[v0.0.2 Release Candidate 1](https://github.com/TipzTeam/EzAdbTools/releases/tag/v0.0.2.rc1)
 
 ## 🧑🏻‍Authors
 * **Ricky Cheung** - *Initial work* - [TipzTeam](https://github.com/TipzTeam)
