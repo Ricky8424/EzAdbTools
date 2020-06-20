@@ -792,7 +792,7 @@ cd ..
 echo Display control
 echo ==============================
 echo.
-echo 1 - Use scrcpy
+echo 1 - Scrcpy
 echo X - Back
 echo.
 set /P M="Input options shown above then press ENTER: "
