@@ -1,22 +1,21 @@
-# EzAdbTools, an open source batch tool for Android developers
-This tools is a basic batch tool that uses many important tools for most Android developers.
+# EzAdbTools
 
-## System Requirements
+## 💻System Requirements
 - Windows 7 or newer
 - A 64-bit system
 - Any Android device
 - Device driver installed
 - API Level 21 or higher for scrcpy
 
-## Usage
-Download the binary and extract the downloaded <b>.zip</b> file, then double click on the <b>start.bat</b> file to start using this tool.
+## 📦Download
+[Releases](https://github.com/TipzTeam/EzAdbTools/releases)
 
-## Authors
+## 🧑🏻‍Authors
 * **Ricky Cheung** - *Initial work* - [TipzTeam](https://github.com/TipzTeam)
 
 See also the list of [contributors](https://github.com/TipzTeam/EzAdbTools/contributors) who participated in this project.
 
-## Origin of codes
+## ⌨️Origin of codes
 [scrcpy](https://github.com/Genymobile/scrcpy)
 [platform-tools](https://dl.google.com/android/repository/platform-tools-latest-windows.zip)
 [bzip2](https://sourceforge.net/projects/bzip2/)
@@ -29,8 +28,8 @@ See also the list of [contributors](https://github.com/TipzTeam/EzAdbTools/contr
 [mkbootimg](https://github.com/osm0sis/mkbootimg)
 [xz](https://github.com/addaleax/xz)
 
-## License
+## 📝License
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
 
-## Forums Thread
+## 🗨Forums Thread
 <b>XDA Thread</b>: https://forum.xda-developers.com/android/software/tools-ezadbtools-source-simple-adb-t4033297
