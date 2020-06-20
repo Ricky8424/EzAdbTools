@@ -797,6 +797,7 @@ echo X - Back
 echo.
 set /P M="Input options shown above then press ENTER: "
 if %M%==1 GOTO use_scrcpy
+if %M%==11 GOTO use_scrcpy_sw
 if %M%==x GOTO menu
 if %M%==X GOTO menu
 cls
@@ -823,5 +824,22 @@ echo Launching scrcpy...
 echo.
 cd bin
 scrcpy
+cd ..
+goto scrcpy
+
+:use_scrcpy_sw
+cls
+set M=
+echo.
+cd variables
+type startprint
+cd ..
+echo scrcpy
+echo ==============================
+echo.
+echo Launching scrcpy...
+echo.
+cd bin
+scrcpy -w
 cd ..
 goto scrcpy
