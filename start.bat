@@ -414,16 +414,16 @@ echo.
 echo This feature is not tested.
 choice /d y /t 2 > nul
     (
-    echo cd variables
-    echo type startprint
-    echo cd ..
+	echo cd variables
+	echo type startprint
+	echo cd ..
 	echo echo Full Backup
 	echo echo ==============================
 	echo cd bin
 	echo mkdir backups
 	echo adb.exe backup -apk -shared -all -f \backups\backup.ab
 	echo cd ..
-    echo call delworking.bat
+	echo call delworking.bat
 	echo cls
 )>"working.bat"
 cls
@@ -734,6 +734,7 @@ if %M%==n GOTO fastboot
 if %M%==Y GOTO fastboot_charge_y
 if %M%==N GOTO fastboot
 cls
+cd variables
 type error1003
 cd ..
 choice /d y /t 2 > nul
@@ -803,6 +804,7 @@ echo.
 set /P M="Input options shown above then press ENTER: "
 if %M%==1 GOTO use_scrcpy
 if %M%==11 GOTO use_scrcpy_sw
+if %M%==19 GOTO use_scrcpy_19
 if %M%==x GOTO menu
 if %M%==X GOTO menu
 cls
@@ -847,4 +849,22 @@ echo.
 cd bin
 scrcpy -w
 cd ..
+goto scrcpy
+
+:use_scrcpy_19
+cls
+set M=
+echo.
+cd variables
+type startprint
+cd ..
+echo scrcpy
+echo ==============================
+echo.
+echo Launching scrcpy...
+echo.
+cd bin
+cd scrc19
+scrcpy -w
+cd ..&cd..
 goto scrcpy
