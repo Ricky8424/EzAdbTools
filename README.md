@@ -5,7 +5,7 @@
 - A 64-bit system
 - Any Android device
 - Device driver installed
-- API Level 21 or higher for scrcpy
+- API Level 19 or higher for scrcpy
 - Java (>= 7)
 
 ## 📦Download
