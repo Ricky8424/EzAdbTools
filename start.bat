@@ -899,6 +899,6 @@ echo Launching scrcpy...
 echo.
 cd bin
 cd scrc19
-scrcpy -w
+scrcpy
 cd ..&cd..
 goto scrcpy
