@@ -705,16 +705,16 @@ set /P fastboot_flash_part="Type the partition you want to flash than press ENTE
 set /P fastboot_flash_image="Drag and drop the image you want to flash than press ENTER: "
 set delworkingbat=1
 (
-	echo cd variables
+    echo cd variables
     echo type startprint
     echo cd ..
-	echo echo unlock.bin Unlock
-	echo echo ==============================
-	echo echo.
-	echo cd bin
-	echo fastboot.exe flash %fastboot_flash_part% %fastboot_flash_image% 
-	echo cd ..
-	echo call delworking.bat
+    echo echo unlock.bin Unlock
+    echo echo ==============================
+    echo echo.
+    echo cd bin
+    echo fastboot.exe flash %fastboot_flash_part% %fastboot_flash_image% 
+    echo cd ..
+    echo call delworking.bat
 )>"working.bat"
 cls
 call working.bat
