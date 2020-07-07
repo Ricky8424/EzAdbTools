@@ -524,7 +524,7 @@ if %M%==1 GOTO fastboot_reboot
 if %M%==2 GOTO fastboot_unlock
 if %M%==3 GOTO fastboot_device_id
 if %M%==4 GOTO fastboot_flash
-if %M%==4 GOTO fastboot_charge
+if %M%==5 GOTO fastboot_charge
 if %M%==X GOTO menu
 if %M%==x GOTO menu
 cls
