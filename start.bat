@@ -196,6 +196,7 @@ set delworkingbat=1
     echo call delworking.bat
 	echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :adb_app_uni
@@ -425,6 +426,7 @@ choice /d y /t 2 > nul
     echo call delworking.bat
 	echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :adb_root_mode_on
@@ -485,6 +487,7 @@ set delworkingbat=1
     echo call delworking.bat
     echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :adb_logcat
@@ -640,6 +643,7 @@ set delworkingbat=1
     echo call delworking.bat
     echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :fastboot_unlock_bin
@@ -665,6 +669,7 @@ set delworkingbat=1
     echo call delworking.bat
     echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :fastboot_relockbl
@@ -711,6 +716,7 @@ set delworkingbat=1
 	echo cd ..
 	echo call delworking.bat
 )>"working.bat"
+cls
 call working.bat
 
 :fastboot_charge
@@ -728,7 +734,6 @@ if %M%==n GOTO fastboot
 if %M%==Y GOTO fastboot_charge_y
 if %M%==N GOTO fastboot
 cls
-cd variables
 type error1003
 cd ..
 choice /d y /t 2 > nul
