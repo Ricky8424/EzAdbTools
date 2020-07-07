@@ -24,9 +24,12 @@ echo Checking if your system meet the requirments...
 
 echo Checking system...
 
+echo =========================
+echo CPU Info:
 echo PROCESSOR_ARCHITECTURE:
 echo PROCESSOR_ARCHITECTURE var:
 echo %PROCESSOR_ARCHITECTURE% | find /i "x86" > nul
+echo =========================
 if %errorlevel%==0 (
     echo E1000: 32-bit systems aren't supported by ExAdbTools, exitting...
     choice /d y /t 2 > nul
