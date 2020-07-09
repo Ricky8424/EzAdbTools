@@ -69,6 +69,8 @@ set fastboot_flash_part=
 set fastboot_flash_image=
 set unlock_bin=
 set unlock_key=
+set tcpip=
+set connectadb=
 
 echo Done!
 
@@ -123,6 +125,7 @@ echo 4 - Backup
 echo 5 - Sideload flashable zip file
 echo 6 - Logcat
 echo C - Connected devices
+echo CWL - Connect to a wireless device
 echo X - Back
 echo.
 set /P M="Input options shown above then press ENTER: "
@@ -134,6 +137,8 @@ if %M%==3 GOTO adb_reboot
 if %M%==4 GOTO adb_full_backup
 if %M%==5 GOTO adb_sideload
 if %M%==6 GOTO adb_logcat
+if %M%==CWL GOTO adb_cwl
+if %M%==cwl GOTO adb_cwl
 if %M%==X GOTO menu
 if %M%==x GOTO menu
 cls
@@ -144,8 +149,38 @@ choice /d y /t 2 > nul
 set M=
 goto adb
 
+:adb_cwl
+cls
+set M=
+cd variables
+type startprint
+cd ..
+echo Connect to a wireless device
+echo ==============================
+echo. 
+set /P tcpip="Enter the device's tcpip (Just press ENTER to skip this)"
+set /P connectadb="Enter the device's IP"
+goto adb_cwl_lol
+
+:adb_cwl_lol
+cls
+echo cls >> working.bat
+echo set M= >> working.bat
+echo cd variables >> working.bat
+echo type startprint >> working.bat
+echo cd .. >> working.bat
+echo echo Connect to a wireless device >> working.bat
+echo echo ============================== >> working.bat
+echo echo. >> working.bat
+echo cd bin >> working.bat
+if not %M%=="" echo adb tcpip %tcpip% >> working.bat
+echo adb connect %connectadb% >> working.bat
+echo call delworking.bat >> working.bat
+echo 
+
 :adb_appman
 cls
+set M=
 echo.
 cd variables
 type startprint
@@ -184,17 +219,16 @@ echo.
 set /P adb_install_app="Drag and drop the apk file into this window then hit enter: "
 if exist %adb_install_app% (
 set delworkingbat=1
-    (
-    echo cd variables
-    echo type startprint
-    echo cd ..
-    echo echo Install Applications
-    echo echo ==============================
+(
+	echo cd variables
+	echo type startprint
+	echo cd ..
+	echo echo Install Applications
+	echo echo ==============================
 	echo cd bin
 	echo adb.exe install %adb_install_app%
 	echo cd ..
-    echo call delworking.bat
-	echo cls
+	echo call delworking.bat
 )>"working.bat"
 cls
 call working.bat
@@ -413,17 +447,17 @@ echo ==============================
 echo.
 echo This feature is not tested.
 choice /d y /t 2 > nul
-    (
-    echo cd variables
-    echo type startprint
-    echo cd ..
+(
+	echo cd variables
+	echo type startprint
+	echo cd ..
 	echo echo Full Backup
 	echo echo ==============================
 	echo cd bin
 	echo mkdir backups
 	echo adb.exe backup -apk -shared -all -f \backups\backup.ab
 	echo cd ..
-    echo call delworking.bat
+	echo call delworking.bat
 	echo cls
 )>"working.bat"
 cls
@@ -475,17 +509,17 @@ echo ==============================
 echo.
 set /P sideload_zip="Drag and drop the flashable zip file you want to flash: "
 set delworkingbat=1
-    (
-    echo cd variables
-    echo type startprint
-    echo cd ..
-    echo echo Sideload flashable zip file
-    echo echo ==============================
-    echo cd bin
-    echo adb.exe sideload %sideload_zip%
-    echo cd ..
-    echo call delworking.bat
-    echo cls
+(
+	echo cd variables
+	echo type startprint
+	echo cd ..
+	echo echo Sideload flashable zip file
+	echo echo ==============================
+	echo cd bin
+	echo adb.exe sideload %sideload_zip%
+	echo cd ..
+	echo call delworking.bat
+	echo cls
 )>"working.bat"
 cls
 call working.bat
@@ -633,15 +667,15 @@ echo ==============================
 echo.
 set /P unlock_key="Input the code you got for unlocking your device: "
 set delworkingbat=1
-    (
-    echo type startprint
-    echo echo Unlock Bootloader (Code needed)
-    echo echo ==============================
-    echo cd bin
-    echo fastboot.exe oem-unlock %unlock_key%
-    echo cd ..
-    echo call delworking.bat
-    echo cls
+(
+	echo type startprint
+	echo echo Unlock Bootloader (Code needed)
+	echo echo ==============================
+	echo cd bin
+	echo fastboot.exe oem-unlock %unlock_key%
+	echo cd ..
+	echo call delworking.bat
+	echo cls
 )>"working.bat"
 cls
 call working.bat
@@ -658,16 +692,16 @@ echo ==============================
 echo.
 set /P unlock_bin="Drag and drop the unlock.bin into our window and press ENTER: "
 set delworkingbat=1
-    (
-    echo type type logo.ASART
-    echo type startprint
-    echo echo unlock.bin Unlock
-    echo echo ==============================
-    echo cd bin
-    echo fastboot.exe flash unlock %unlock_bin%
-    echo cd ..
-    echo call delworking.bat
-    echo cls
+(
+	echo type type logo.ASART
+	echo type startprint
+	echo echo unlock.bin Unlock
+	echo echo ==============================
+	echo cd bin
+	echo fastboot.exe flash unlock %unlock_bin%
+	echo cd ..
+	echo call delworking.bat
+   	echo cls
 )>"working.bat"
 cls
 call working.bat
@@ -705,16 +739,16 @@ set /P fastboot_flash_part="Type the partition you want to flash than press ENTE
 set /P fastboot_flash_image="Drag and drop the image you want to flash than press ENTER: "
 set delworkingbat=1
 (
-    echo cd variables
-    echo type startprint
-    echo cd ..
-    echo echo unlock.bin Unlock
-    echo echo ==============================
-    echo echo.
-    echo cd bin
-    echo fastboot.exe flash %fastboot_flash_part% %fastboot_flash_image% 
-    echo cd ..
-    echo call delworking.bat
+	echo cd variables
+	echo type startprint
+	echo cd ..
+	echo echo unlock.bin Unlock
+	echo echo ==============================
+	echo echo.
+ 	echo cd bin
+	echo fastboot.exe flash %fastboot_flash_part% %fastboot_flash_image% 
+	echo cd ..
+	echo call delworking.bat
 )>"working.bat"
 cls
 call working.bat
@@ -734,6 +768,7 @@ if %M%==n GOTO fastboot
 if %M%==Y GOTO fastboot_charge_y
 if %M%==N GOTO fastboot
 cls
+cd variables
 type error1003
 cd ..
 choice /d y /t 2 > nul
@@ -803,6 +838,7 @@ echo.
 set /P M="Input options shown above then press ENTER: "
 if %M%==1 GOTO use_scrcpy
 if %M%==11 GOTO use_scrcpy_sw
+if %M%==19 GOTO use_scrcpy_19
 if %M%==x GOTO menu
 if %M%==X GOTO menu
 cls
@@ -847,4 +883,22 @@ echo.
 cd bin
 scrcpy -w
 cd ..
+goto scrcpy
+
+:use_scrcpy_19
+cls
+set M=
+echo.
+cd variables
+type startprint
+cd ..
+echo scrcpy
+echo ==============================
+echo.
+echo Launching scrcpy...
+echo.
+cd bin
+cd scrc19
+scrcpy
+cd ..&cd..
 goto scrcpy
