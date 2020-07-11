@@ -20,8 +20,6 @@
 title EzAdbTools
 color 0a
 
-echo Checking your system...
-
 echo Checking system...
 
 echo PROCESSOR_ARCHITECTURE:
@@ -73,6 +71,7 @@ set tcpip=
 set connectadb=
 
 echo Done!
+choice /d y /t 1 > nul
 
 goto :menu
 
@@ -791,7 +790,6 @@ goto fastboot
 
 :exit
 cls
-set M=
 echo.
 cd variables
 type startprint
@@ -842,8 +840,6 @@ if %M%==19 GOTO use_scrcpy_19
 if %M%==x GOTO menu
 if %M%==X GOTO menu
 cls
-title EzAdbTools
-cls
 cd variables
 type error1003
 cd ..
@@ -853,7 +849,6 @@ goto scrcpy
 
 :use_scrcpy
 cls
-set M=
 echo.
 cd variables
 type startprint
@@ -870,7 +865,6 @@ goto scrcpy
 
 :use_scrcpy_sw
 cls
-set M=
 echo.
 cd variables
 type startprint
@@ -887,7 +881,6 @@ goto scrcpy
 
 :use_scrcpy_19
 cls
-set M=
 echo.
 cd variables
 type startprint
