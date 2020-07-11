@@ -21,7 +21,7 @@
 :: Script 1 - Remove working.bat
 :: ==============================
 
-rem Actual script
+:: Actual script
 echo ==============================
 echo EzAdbTools Scripts
 echo Script 1 - Remove working.bat
