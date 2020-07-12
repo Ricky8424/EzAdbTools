@@ -32,9 +32,7 @@ if %errorlevel%==0 (
     echo E1000: 32-bit systems aren't supported by EzAdbTools, exitting...
     choice /d y /t 2 > nul
     exit
-
-
-
+)
 
 echo Checking for adb.exe...
 if not exist "%CD%\bin\adb.exe" (
