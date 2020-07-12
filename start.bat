@@ -1,4 +1,6 @@
 @echo off
+cls
+goto init
 
 ::
 ::  Copyright (c) 2020, TipzTeam
@@ -16,7 +18,7 @@
 ::  permissions and limitations under the License.
 ::
 
-:int
+:init
 title EzAdbTools
 color 0a
 
