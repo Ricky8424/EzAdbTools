@@ -1,19 +1,59 @@
 @echo off
+cls
+goto init
+
+::
+::  Copyright (c) 2020, TipzTeam
+::
+::  Licensed under the GPLv3 License, Version 2.0 (the "License"); you
+::  may not use this file except in compliance with the License.  You may
+::  obtain a copy of the License at
+::
+::  https://www.gnu.org/licenses/gpl-3.0.en.html
+::
+::  Unless required by applicable law or agreed to in writing, software
+::  distributed under the License is distributed on an "AS IS" BASIS,
+::  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+::  implied.  See the License for the specific language governing
+::  permissions and limitations under the License.
+::
+
+:init
+title EzAdbTools
 color 0a
 
-:int
-title EzAdbTools
-echo Initializing...
-
 echo Checking system...
+
+echo =========================
+echo CPU Info:
+echo PROCESSOR_ARCHITECTURE:
 echo PROCESSOR_ARCHITECTURE var:
 echo %PROCESSOR_ARCHITECTURE% | find /i "x86" > nul
+echo =========================
 if %errorlevel%==0 (
-    echo   32-bit
-) else (
-    echo   64-bit
+    echo E1000: 32-bit systems aren't supported by EzAdbTools, exitting...
+    choice /d y /t 2 > nul
+    exit
 )
-echo.
+
+echo Checking for adb.exe...
+if not exist "%CD%\bin\adb.exe" (
+echo E1001: Unable to find adb.exe. Redownload this application.
+choice /d y /t 2 > nul
+exit
+) else (
+echo Found adb.exe
+)
+
+echo Checking for fastboot...
+if not exist "%CD%\bin\fastboot.exe" (
+echo E1002: Unable to find fastboot.exe. Redownload this application.
+choice /d y /t 2 > nul
+exit
+)
+echo Found fastboot.exe
+
+echo Starting Services...
 
 echo Resetting adb...
 cd bin
@@ -30,23 +70,11 @@ set fastboot_flash_part=
 set fastboot_flash_image=
 set unlock_bin=
 set unlock_key=
+set tcpip=
+set connectadb=
 
-echo Checking for adb.exe...
-if not exist "%CD%\bin\adb.exe" (
-echo Unable to find adb.exe. Redownload this application.
-choice /d y /t 2 > nul
-exit
-) else (
-echo Found adb.exe
-)
-
-echo Checking for fastboot...
-if not exist "%CD%\bin\fastboot.exe" (
-echo Unable to find fastboot.exe. Redownload this application.
-choice /d y /t 2 > nul
-exit
-)
-echo Found fastboot.exe
+echo Done!
+choice /d y /t 1 > nul
 
 goto :menu
 
@@ -54,7 +82,9 @@ goto :menu
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Start Menu
 echo ==============================
 echo.
@@ -73,8 +103,9 @@ if %M%==X GOTO exit
 if %M%==x GOTO exit
 if %M%=show c GOTO elic
 cls
-cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto menu
@@ -83,7 +114,9 @@ goto menu
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo adb Related
 echo ==============================
 echo.
@@ -94,6 +127,7 @@ echo 4 - Backup
 echo 5 - Sideload flashable zip file
 echo 6 - Logcat
 echo C - Connected devices
+echo CWL - Connect to a wireless device
 echo X - Back
 echo.
 set /P M="Input options shown above then press ENTER: "
@@ -105,19 +139,54 @@ if %M%==3 GOTO adb_reboot
 if %M%==4 GOTO adb_full_backup
 if %M%==5 GOTO adb_sideload
 if %M%==6 GOTO adb_logcat
+if %M%==CWL GOTO adb_cwl
+if %M%==cwl GOTO adb_cwl
 if %M%==X GOTO menu
 if %M%==x GOTO menu
 cls
-cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto adb
 
+:adb_cwl
+cls
+set M=
+cd variables
+type startprint
+cd ..
+echo Connect to a wireless device
+echo ==============================
+echo. 
+set /P tcpip="Enter the device's tcpip (Just press ENTER to skip this)"
+set /P connectadb="Enter the device's IP"
+goto adb_cwl_lol
+
+:adb_cwl_lol
+cls
+echo cls >> working.bat
+echo set M= >> working.bat
+echo cd variables >> working.bat
+echo type startprint >> working.bat
+echo cd .. >> working.bat
+echo echo Connect to a wireless device >> working.bat
+echo echo ============================== >> working.bat
+echo echo. >> working.bat
+echo cd bin >> working.bat
+if not %M%=="" echo adb tcpip %tcpip% >> working.bat
+echo adb connect %connectadb% >> working.bat
+echo call delworking.bat >> working.bat
+echo 
+
 :adb_appman
 cls
+set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Application Manager
 echo ==============================
 echo.
@@ -133,8 +202,9 @@ if %M%==3 GOTO adb_app_list
 if %M%==X GOTO adb
 if %M%==x GOTO adb
 cls
-cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto adb_appman
@@ -142,34 +212,35 @@ goto adb_appman
 :adb_app_install
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Install Applications
 echo ==============================
 echo.
 set /P adb_install_app="Drag and drop the apk file into this window then hit enter: "
 if exist %adb_install_app% (
 set delworkingbat=1
-    (
-    echo type startprint
-    echo echo Install Applications
-    echo echo ==============================
+(
+	echo cd variables
+	echo type startprint
+	echo cd ..
+	echo echo Install Applications
+	echo echo ==============================
 	echo cd bin
 	echo adb.exe install %adb_install_app%
 	echo cd ..
-    echo call delworking.bat
-	echo cls
+	echo call delworking.bat
 )>"working.bat"
+cls
 call working.bat
-) else (
-    echo Error! File doesn't exist!
-	choice /d y /t 2 > nul
-	goto adb_app_install
-)
 
 :adb_app_uni
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Uninstall Applications
 echo ==============================
 echo.
@@ -180,7 +251,9 @@ goto adb_appman
 :adb_app_list
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo List Applications
 echo ==============================
 echo.
@@ -193,7 +266,9 @@ goto adb_appman
 :adb_android_shell
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Android Shell
 echo ==============================
 echo.
@@ -204,7 +279,9 @@ goto menu
 :adb_su_android_shell
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Android Shell
 echo ==============================
 echo.
@@ -216,7 +293,9 @@ adb.exe shell
 :adb_devices
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Connected devices
 echo ==============================
 echo.
@@ -232,7 +311,9 @@ goto adb
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot Menu
 echo ==============================
 echo.
@@ -254,8 +335,9 @@ if %M%==6 GOTO adb_reboot_safemode_root
 if %M%==X GOTO adb
 if %M%==x GOTO adb
 cls
-cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto adb_reboot
@@ -263,7 +345,9 @@ goto adb_reboot
 :adb_reboot_device
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot device
 echo ==============================
 echo.
@@ -277,7 +361,9 @@ goto adb_reboot
 :adb_reboot_fastboot
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot into Fastboot Mode
 echo ==============================
 echo.
@@ -291,7 +377,9 @@ goto adb_reboot
 :adb_reboot_recovery
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot into Recovery Mode
 echo ==============================
 echo.
@@ -305,7 +393,9 @@ goto adb_reboot
 :adb_reboot_edl
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot into EDL
 echo ==============================
 echo.
@@ -319,7 +409,9 @@ goto adb_reboot
 :adb_reboot_download
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot into Download Mode
 echo ==============================
 echo.
@@ -333,7 +425,9 @@ goto adb_reboot
 :adb_reboot_safemode_root
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot into Safe Mode (ROOT)
 echo ==============================
 echo.
@@ -347,30 +441,37 @@ goto adb_reboot
 :adb_full_backup
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Full Backup
 echo ==============================
 echo.
 echo This feature is not tested.
 choice /d y /t 2 > nul
-    (
-    echo type startprint
+(
+	echo cd variables
+	echo type startprint
+	echo cd ..
 	echo echo Full Backup
 	echo echo ==============================
 	echo cd bin
 	echo mkdir backups
 	echo adb.exe backup -apk -shared -all -f \backups\backup.ab
 	echo cd ..
-    echo call delworking.bat
+	echo call delworking.bat
 	echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :adb_root_mode_on
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Enable Root Mode
 echo ==============================
 echo.
@@ -385,7 +486,9 @@ choice /d y /t 3 > nul
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Disable Root Mode
 echo ==============================
 echo.
@@ -400,29 +503,36 @@ choice /d y /t 3 > nul
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Sideload flashable zip file
 echo ==============================
 echo.
 set /P sideload_zip="Drag and drop the flashable zip file you want to flash: "
 set delworkingbat=1
-    (
-    echo type startprint
-    echo echo Sideload flashable zip file
-    echo echo ==============================
-    echo cd bin
-    echo adb.exe sideload %sideload_zip%
-    echo cd ..
-    echo call delworking.bat
-    echo cls
+(
+	echo cd variables
+	echo type startprint
+	echo cd ..
+	echo echo Sideload flashable zip file
+	echo echo ==============================
+	echo cd bin
+	echo adb.exe sideload %sideload_zip%
+	echo cd ..
+	echo call delworking.bat
+	echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :adb_logcat
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Logcat
 echo ==============================
 echo.
@@ -435,7 +545,9 @@ adb logcat
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo fastboot Related
 echo ==============================
 echo.
@@ -451,12 +563,13 @@ if %M%==1 GOTO fastboot_reboot
 if %M%==2 GOTO fastboot_unlock
 if %M%==3 GOTO fastboot_device_id
 if %M%==4 GOTO fastboot_flash
-if %M%==4 GOTO fastboot_charge
+if %M%==5 GOTO fastboot_charge
 if %M%==X GOTO menu
 if %M%==x GOTO menu
 cls
-cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto fastboot
@@ -464,7 +577,9 @@ goto fastboot
 :fastboot_reboot
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Reboot Device
 echo ==============================
 echo.
@@ -480,7 +595,9 @@ goto fastboot
 :fastboot_unlock
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Bootloader unlocking related 
 echo ==============================
 echo.
@@ -501,7 +618,9 @@ if %M%==r GOTO fastboot_relockbl
 if %M%==X GOTO menu
 if %M%==x GOTO menu
 cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto fastboot_unlock
@@ -509,7 +628,9 @@ goto fastboot_unlock
 :fastboot_unlock_stat
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Bootloader Unlock Status
 echo ==============================
 echo.
@@ -523,7 +644,9 @@ goto fastboot_unlock
 :fastboot_unlock_nocode
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Bootloader Unlock (No code)
 echo ==============================
 echo.
@@ -538,45 +661,51 @@ goto fastboot_unlock
 set unlock_key=
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Unlock Bootloader (Code needed)
 echo ==============================
 echo.
 set /P unlock_key="Input the code you got for unlocking your device: "
 set delworkingbat=1
-    (
-    echo type startprint
-    echo echo Unlock Bootloader (Code needed)
-    echo echo ==============================
-    echo cd bin
-    echo fastboot.exe oem-unlock %unlock_key%
-    echo cd ..
-    echo call delworking.bat
-    echo cls
+(
+	echo type startprint
+	echo echo Unlock Bootloader (Code needed)
+	echo echo ==============================
+	echo cd bin
+	echo fastboot.exe oem-unlock %unlock_key%
+	echo cd ..
+	echo call delworking.bat
+	echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :fastboot_unlock_bin
 set unlock_bin=
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo unlock.bin Unlock
 echo ==============================
 echo.
 set /P unlock_bin="Drag and drop the unlock.bin into our window and press ENTER: "
 set delworkingbat=1
-    (
-    echo type type logo.ASART
-    echo type startprint
-    echo echo unlock.bin Unlock
-    echo echo ==============================
-    echo cd bin
-    echo fastboot.exe flash unlock %unlock_bin%
-    echo cd ..
-    echo call delworking.bat
-    echo cls
+(
+	echo type type logo.ASART
+	echo type startprint
+	echo echo unlock.bin Unlock
+	echo echo ==============================
+	echo cd bin
+	echo fastboot.exe flash unlock %unlock_bin%
+	echo cd ..
+	echo call delworking.bat
+   	echo cls
 )>"working.bat"
+cls
 call working.bat
 
 :fastboot_relockbl
@@ -587,7 +716,9 @@ goto menu
 :fastboot_device_id
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Get device-id
 echo ==============================
 echo.
@@ -600,7 +731,9 @@ goto fastboot
 :fastboot_flash
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Flash image file
 echo ==============================
 echo.
@@ -608,21 +741,26 @@ set /P fastboot_flash_part="Type the partition you want to flash than press ENTE
 set /P fastboot_flash_image="Drag and drop the image you want to flash than press ENTER: "
 set delworkingbat=1
 (
+	echo cd variables
 	echo type startprint
+	echo cd ..
 	echo echo unlock.bin Unlock
 	echo echo ==============================
 	echo echo.
-	echo cd bin
+ 	echo cd bin
 	echo fastboot.exe flash %fastboot_flash_part% %fastboot_flash_image% 
 	echo cd ..
 	echo call delworking.bat
 )>"working.bat"
+cls
 call working.bat
 
 :fastboot_charge
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Enable Charge Screen
 echo ==============================
 echo.
@@ -632,7 +770,9 @@ if %M%==n GOTO fastboot
 if %M%==Y GOTO fastboot_charge_y
 if %M%==N GOTO fastboot
 cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto fastboot_charge
@@ -640,7 +780,9 @@ goto fastboot_charge
 :fastboot_charge_y
 cls
 echo.
+cd variables
 type startprint
+cd ..
 echo Enable Charge Screen
 echo ==============================
 echo.
@@ -651,9 +793,10 @@ goto fastboot
 
 :exit
 cls
-set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Exit
 echo ==============================
 echo.
@@ -668,12 +811,15 @@ exit
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Command Line
 echo ==============================
 echo.
 echo This will EzAdbTools, execute 'call eat.bat' to 
 echo start this program again.
+echo 
 cd bin
 cmd
 
@@ -681,30 +827,35 @@ cmd
 cls
 set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo Display control
 echo ==============================
 echo.
-echo 1 - Use scrcpy
+echo 1 - Scrcpy
 echo X - Back
 echo.
 set /P M="Input options shown above then press ENTER: "
 if %M%==1 GOTO use_scrcpy
+if %M%==11 GOTO use_scrcpy_sw
+if %M%==19 GOTO use_scrcpy_19
 if %M%==x GOTO menu
 if %M%==X GOTO menu
 cls
-title EzAdbTools
-cls
-echo You typed a incorrect command, try again.
+cd variables
+type error1003
+cd ..
 choice /d y /t 2 > nul
 set M=
 goto scrcpy
 
 :use_scrcpy
 cls
-set M=
 echo.
+cd variables
 type startprint
+cd ..
 echo scrcpy
 echo ==============================
 echo.
@@ -713,4 +864,37 @@ echo.
 cd bin
 scrcpy
 cd ..
+goto scrcpy
+
+:use_scrcpy_sw
+cls
+echo.
+cd variables
+type startprint
+cd ..
+echo scrcpy
+echo ==============================
+echo.
+echo Launching scrcpy...
+echo.
+cd bin
+scrcpy -w
+cd ..
+goto scrcpy
+
+:use_scrcpy_19
+cls
+echo.
+cd variables
+type startprint
+cd ..
+echo scrcpy
+echo ==============================
+echo.
+echo Launching scrcpy...
+echo.
+cd bin
+cd scrc19
+scrcpy
+cd ..&cd..
 goto scrcpy
